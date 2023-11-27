@@ -1,0 +1,77 @@
+import tkinter as tk
+import random
+
+class RPSGame:
+    def __init__(self, pro):
+        self.pro= pro
+        self.pro.geometry("350x200")
+        self.pro.title("Rock,Paper,Scissors Game")
+
+        self.user_score = 0
+        self.computer_score = 0
+
+        self.user_choice_label = tk.Label(pro, text="Your Choice:", font=("times new roman", 14), bg='#f2720a')
+        self.user_choice_label.grid(row=0, column=0, pady=10)
+
+        choices = ["Rock", "Paper", "Scissors"]
+        self.user_choice_var = tk.StringVar()
+        self.user_choice_menu = tk.OptionMenu(pro, self.user_choice_var, *choices)
+        self.user_choice_menu.grid(row=0, column=1, pady=10)
+        self.user_choice_var.set("Rock")
+
+        self.user_choice_menu["menu"].config(bg="#f2720a")
+        self.user_choice_menu.config(bg="#f2720a",font=("times new roman", 12))
+
+        self.result_label = tk.Label(pro, text="",bg='#f2720a',font=("times new roman", 12))
+        self.result_label.grid(row=1, column=0, columnspan=2, pady=10)
+
+        self.play_button = tk.Button(pro, text="Play",bg='#f2720a',font=("times new roman", 12), command=self.play_game)
+        self.play_button.grid(row=2, column=0, columnspan=2, pady=10)
+
+        self.play_again_button = tk.Button(pro, text="Play Again",bg='#f2720a',font=("times new roman", 12), command=self.play_again, state=tk.DISABLED)
+        self.play_again_button.grid(row=3, column=0, columnspan=2, pady=10)
+
+    def play_game(self):
+        choices = ["Rock", "Paper", "Scissors"]
+        user_choice = self.user_choice_var.get()
+
+        computer_choice = random.choice(choices)
+        result = self.determine_winner(user_choice, computer_choice)
+
+        self.result_label.config(text=f"You chose {user_choice}. Computer chose {computer_choice}. {result}")
+
+        if result == "You win!":
+            self.user_score += 1
+        elif result == "You lose!":
+            self.computer_score += 1
+
+        self.update_scores()
+
+        self.play_button.config(state=tk.DISABLED)
+        self.play_again_button.config(state=tk.NORMAL)
+
+    def determine_winner(self, user_choice, computer_choice):
+        if user_choice == computer_choice:
+            return "It's a tie!"
+        elif ((user_choice == "Rock" and computer_choice == "Scissors") or
+            (user_choice == "Scissors" and computer_choice == "Paper") or
+            (user_choice == "Paper" and computer_choice == "Rock")):
+            return "You win!"
+        else:
+            return "You lose!"
+
+    def play_again(self):
+        self.user_choice_var.set("Rock")
+        self.result_label.config(text="")
+        self.play_button.config(state=tk.NORMAL)
+        self.play_again_button.config(state=tk.DISABLED)
+
+    def update_scores(self):
+        self.pro.title(f"Rock, Paper, Scissors Game - User: {self.user_score}, Computer: {self.computer_score}")
+
+
+if __name__ == "__main__":
+    box = tk.Tk()
+    box['bg'] = "#f2720a"
+    game = RPSGame(box)
+    box.mainloop()
